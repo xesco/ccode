@@ -26,7 +26,6 @@ void retab(char to[], char from[]) {
         if (from[i] == '\t') {
             for (k=j+TABSTOP; j<k; j++)
                 to[j] = ' '; 
-            }
             i++;
         }
         else
