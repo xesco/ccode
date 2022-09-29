@@ -2,6 +2,9 @@
 
 #define MAXLINE 1024
 #define TABSTOP 4
+#define TAB '\t'
+#define BLANK ' '
+#define STREND '\0'
 
 void retab(char to[], char from[]);
 int _getline(char line[], int maxline);
@@ -15,25 +18,27 @@ int main() {
         retab(newline, line);
         printf("%s", newline);
     }
-
     return 0;
 }
 
+/* replace TABs to spaces */
 void retab(char to[], char from[]) {
-    int i=0, j=0, k;
+    int i=0, j=0;
 
-    while (from[i] != '\0') {
-        if (from[i] == '\t') {
-            for (k=j+TABSTOP; j<k; j++)
-                to[j] = ' '; 
+    while (from[i] != STREND) {
+        if (from[i] != TAB)
+            to[j++] = from[i++];
+        else {
+            for (int k=j+TABSTOP; j<k; j++)
+                to[j] = BLANK; 
             i++;
         }
-        else
-            to[j++] = from[i++];
     }
+    // add final null character
     to[j] = from[i];
 }
 
+/* get next line form stdin */
 int _getline(char s[], int lim) {
 
     int c, i;
