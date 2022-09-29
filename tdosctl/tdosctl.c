@@ -6,26 +6,33 @@
 #include "tdosctl.h"
 
 
-/* init curl and download the gamelists */
+/*
+  init curl and download the gamelists
+*/
 CURL* tdos_init(void) {
 
     CURL *curl;
 
+    printf("Initialising tdosctl...\n");
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
+    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
+    printf("Done!\n");
 
     // get gamelists
+    printf("Fetching gamelists...\n");
     tdos_get_gamelist(curl, Alpha, BASEURL);
-    tdos_get_gamelist(curl, Byyear, BASEURL);
+    tdos_get_gamelist(curl, ByYear, BASEURL);
+    printf("Done!\n");
 
     return curl;
 }
 
 
-/* given a game title in the collection, return a URL ready to be curled
-   to download the game.
+/*
+  given a game title in the collection, return a URL ready to be curled
+  to download the game.
 */
 void tdos_title_to_url(CURL *curl, char url[], char title[], char base_url[]) {
 
@@ -71,7 +78,9 @@ void tdos_find_year_in_title(char year[], char title[]) {
 }
 
 
-/* get the gamelist by year or in alphabetic order, and save it into a file */
+/*
+  get the gamelist by year or in alphabetic order, and save it into a file
+*/
 void tdos_get_gamelist(CURL *curl, enum tdos_LIST_TYPE type, char base_url[]) {
 
     char *resource;
@@ -79,7 +88,7 @@ void tdos_get_gamelist(CURL *curl, enum tdos_LIST_TYPE type, char base_url[]) {
     char url[MAXURLLEN];
 
     switch (type) {
-        case (Byyear):
+        case (ByYear):
             resource = "Lists/byyear.txt";
             filename = "byyear.txt";
             break;
@@ -114,8 +123,7 @@ void tdos_easy_perform(CURL *curl, char filename[], char url[]) {
 int main() {
 
     CURL *curl = tdos_init();
-
-    tdos_get_game(curl, title, BASEURL);
+    tdos_get_game(curl, TITLE, BASEURL);
 
     curl_easy_cleanup(curl);
     curl_global_cleanup();
